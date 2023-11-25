@@ -9,32 +9,34 @@ import os
 main_w = tkinter.Tk()
 main_w.title("PEP8 auto-fixer")
 # main_w.iconbitmap('icon_path')
-main_w.geometry("450x400")
+main_w.geometry("455x400")
 main_w.resizable(False,False)
 
-# Frames
-scroll_frame = tkinter.Frame(main_w)
-
 # scrollable frame
+scroll_frame = tkinter.Frame(main_w)
 scroll_bar = tkinter.Scrollbar(scroll_frame)
 scroll_bar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 
-text_area = tkinter.Text(scroll_frame, bg="SystemButtonFace")
+text_area = tkinter.Text(scroll_frame,
+                         bg="SystemButtonFace",
+                         width=53,
+                         height=20)
 text_area.pack()
-
 text_area.configure(yscrollcommand=scroll_bar.set)
+
 scroll_bar.configure(command=text_area.yview)
-
-scroll_frame.pack()
-
-check_btn_vars = []
+scroll_frame.place(x=10,y=40)
 
 # functions 
-def insert_check_btn(_range):
-    for r in range(_range):
+check_btn_vars = []
+# it will store all the codes from the pep8 validation
+rules = ['E271','E272','E273','E274','E401','E402']
+def insert_check_btn(rules):
+    for item_rule in rules:
         var = tkinter.IntVar()
         check_btn_vars.append(var)
-        check_btn = tkinter.Checkbutton(text_area, text=f'Item - {r}',
+        check_btn = tkinter.Checkbutton(text_area, 
+                                        text=f'{item_rule} violation',
                                         variable=var,
                                         command=selection_get)
         text_area.window_create(tkinter.END, window=check_btn)
@@ -48,7 +50,7 @@ def selection_get():
     for i in check_btn_vars:
         if i.get() == 1:
             selection.append(check_btn_vars.index(i))
-    print(selection)
+    print(selection) # debug
 
 def browse_file():
     filetypes = (
@@ -62,10 +64,21 @@ def browse_file():
         check_button['state'] = tkinter.NORMAL
 
 def message_info():
-    messagebox.showinfo('Correct', 'This field has 5 characters')
+    messagebox.showinfo('Correct', 'This is just to test the check button')
+
+def select_all():
+    global check_btn_vars
+    for item in check_btn_vars:
+        item.set(1)
+    # update the selection list
+    selection_get()
 
 # widgets
-insert_check_btn(20)
+insert_check_btn(rules) # debug
+select_button = tkinter.Button(main_w, text='Select all', command=select_all, state="disabled")
+select_button.place(x=10, y=368)
+fix_button = tkinter.Button(main_w, text='Fix!', state="disabled")
+fix_button.place(x=410, y=368)
 file_button = tkinter.Button(main_w, text='Select file', command=browse_file)
 file_button.place(x=10, y=10)
 check_button = tkinter.Button(main_w, text='Check', command=message_info, state="disabled")
