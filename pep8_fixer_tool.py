@@ -1,4 +1,6 @@
 # source code: GUI app
+# notes: Add a progress bar to see the time left while the program is fixing the document.
+# https://recursospython.com/guias-y-manuales/barra-de-progreso-progressbar-tcltk-tkinter/
 
 import tkinter
 from tkinter import filedialog as fd
@@ -75,6 +77,7 @@ def select_all():
 
 # widgets
 insert_check_btn(rules) # debug
+# mark all the check buttons
 select_button = tkinter.Button(main_w, text='Select all', command=select_all, state="disabled")
 select_button.place(x=10, y=368)
 fix_button = tkinter.Button(main_w, text='Fix!', state="disabled")
