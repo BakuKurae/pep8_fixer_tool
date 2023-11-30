@@ -6,6 +6,10 @@ import tkinter
 from tkinter import filedialog as fd
 from tkinter import messagebox
 import os
+import pycodestyle
+import re
+from io import StringIO
+import sys
 
 # main window settings
 main_w = tkinter.Tk()
@@ -30,6 +34,10 @@ scroll_bar.configure(command=text_area.yview)
 scroll_frame.place(x=10,y=40)
 
 # functions 
+def clear_frame(frame):
+    for widgets in frame.winfo_children():
+      widgets.destroy()
+
 check_btn_vars = []
 # it will store all the codes from the pep8 validation
 rules = ['E271','E272','E273','E274','E401','E402']
@@ -54,12 +62,14 @@ def selection_get():
             selection.append(check_btn_vars.index(i))
     print(selection) # debug
 
+file_name = ""
 def browse_file():
     filetypes = (
         ('python files', '*.py'),
         ('All files', '*.*')
     )
     path = fd.askopenfilename(filetypes=filetypes)
+    global file_name
     file_name = os.path.basename(path)
     file_label['text'] = file_name
     if len(file_name) != 0:
@@ -67,6 +77,21 @@ def browse_file():
 
 def message_info():
     messagebox.showinfo('Correct', 'This is just to test the check button')
+
+def check_file():
+    old_stdout = sys.stdout
+    sys.stdout = stdout_data = StringIO()
+    global file_name
+    file_checker = pycodestyle.Checker(file_name, show_source=False)
+    file_errors = file_checker.check_all()
+    sys.stdout = old_stdout
+    print("Found %s errors" % file_errors)
+    codes = []
+    for code in stdout_data.getvalue().split("\n")[:-1]:
+        codes.append(re.findall("(?<=: )(.{4})", code)[0])
+    print(codes)
+    # clear_frame(text_area)
+    insert_check_btn(codes) # debug
 
 def select_all():
     global check_btn_vars
@@ -76,7 +101,6 @@ def select_all():
     selection_get()
 
 # widgets
-insert_check_btn(rules) # debug
 # mark all the check buttons
 select_button = tkinter.Button(main_w, text='Select all', command=select_all, state="disabled")
 select_button.place(x=10, y=368)
@@ -84,7 +108,7 @@ fix_button = tkinter.Button(main_w, text='Fix!', state="disabled")
 fix_button.place(x=410, y=368)
 file_button = tkinter.Button(main_w, text='Select file', command=browse_file)
 file_button.place(x=10, y=10)
-check_button = tkinter.Button(main_w, text='Check', command=message_info, state="disabled")
+check_button = tkinter.Button(main_w, text='Check', command=check_file, state="disabled")
 check_button.place(x=395, y=10)
 file_label = tkinter.Label(main_w, text="", anchor="w", width=43, relief="sunken")
 file_label.place(x = 80, y=13)
