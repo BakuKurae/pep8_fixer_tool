@@ -21,18 +21,15 @@ class MainWindow(QMainWindow):
         self.ui.checkButton.setEnabled(False)
         self.ui.markButton.setEnabled(False)
         self.ui.fixButton.setEnabled(False)
+        self.ui.detailButton.setEnabled(False)
         self.ui.browseButton.clicked.connect(self.browseFile)
         self.ui.checkButton.clicked.connect(self.checkFile)
         self.ui.markButton.clicked.connect(self.markAll)
         self.ui.fixButton.clicked.connect(self.selectionChanged)
         self.ui.listWidget.setSelectionMode(QAbstractItemView.MultiSelection)
         self.ui.listWidget.itemClicked.connect(self.selectionChanged)
-        self.ui.listWidget.itemDoubleClicked.connect(self.detailsItem)
         self.ui.progressBar.setValue(100)
         self.ui.progressBar.setVisible(False)
-
-    def detailsItem(self):
-        print("Details")
 
     def selectionChanged(self):
         if len(self.ui.listWidget.selectedItems()) > 0:
@@ -48,6 +45,7 @@ class MainWindow(QMainWindow):
                                                   '*.py')
         global file_name
         file_name = os.path.basename(path)
+        print(path)
         self.ui.lineEdit.setText(file_name)
         self.ui.checkButton.setEnabled(True)
     
@@ -58,7 +56,7 @@ class MainWindow(QMainWindow):
         ignore = []
         old_stdout = sys.stdout
         sys.stdout = stdout_data = StringIO()
-        file_checker = pycodestyle.Checker(file_name, show_source=False)
+        file_checker = pycodestyle.Checker(path, show_source=False)
         file_errors = file_checker.check_all()
         sys.stdout = old_stdout
         print("Found %s errors (and warnings)" % file_errors)
@@ -75,12 +73,13 @@ class MainWindow(QMainWindow):
         self.ui.listWidget.addItems(codes.keys())
         if len(codes) > 0:
             self.ui.markButton.setEnabled(True)
-            # self.ui.fixButton.setEnabled(True)
+            self.ui.detailButton.setEnabled(True)
         else:
             self.success()
     
     def markAll(self):
         self.ui.listWidget.selectAll()
+        self.ui.fixButton.setEnabled(True)
     
     def fix(self):
         global ignore

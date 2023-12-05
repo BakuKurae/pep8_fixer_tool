@@ -30,7 +30,8 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.listWidget = QListWidget(self.centralwidget)
         self.listWidget.setObjectName(u"listWidget")
-        self.listWidget.setGeometry(QRect(10, 50, 381, 211))
+        # self.listWidget.setGeometry(QRect(10, 50, 381, 211))
+        self.listWidget.setGeometry(QRect(10, 50, 381, 191))
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(110, 30, 190, 20))
@@ -60,6 +61,9 @@ class Ui_MainWindow(object):
         self.progressBar.setGeometry(QRect(80, 270, 241, 20))
         self.progressBar.setValue(24)
         self.progressBar.setAlignment(Qt.AlignCenter)
+        self.detailButton = QPushButton(self.centralwidget)
+        self.detailButton.setObjectName(u"detailButton")
+        self.detailButton.setGeometry(QRect(160, 245, 91, 19))
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -74,5 +78,6 @@ class Ui_MainWindow(object):
         self.checkButton.setText(QCoreApplication.translate("MainWindow", u"Check", None))
         self.markButton.setText(QCoreApplication.translate("MainWindow", u"Mark all", None))
         self.fixButton.setText(QCoreApplication.translate("MainWindow", u"Fix!", None))
+        self.detailButton.setText(QCoreApplication.translate("MainWindow", u"Issue Details", None))
     # retranslateUi
 
