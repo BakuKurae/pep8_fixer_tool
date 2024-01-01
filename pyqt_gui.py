@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (QApplication,
                                QHBoxLayout)
 from PySide6.QtCore import *
 from PySide6.QtGui import QIcon
-from windows.ui_mainwindow import Ui_MainWindow
+from Windows.ui_mainwindow import Ui_MainWindow
 import os
 import pycodestyle
 import autopep8
