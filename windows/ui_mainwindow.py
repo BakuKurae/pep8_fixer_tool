@@ -30,7 +30,6 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName(u"centralwidget")
         self.listWidget = QListWidget(self.centralwidget)
         self.listWidget.setObjectName(u"listWidget")
-        # self.listWidget.setGeometry(QRect(10, 50, 381, 211))
         self.listWidget.setGeometry(QRect(10, 50, 381, 191))
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")

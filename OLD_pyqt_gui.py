@@ -1,15 +1,5 @@
 import sys
-from PySide6.QtWidgets import (QApplication,
-                               QVBoxLayout,
-                               QWidget,
-                               QScrollArea,
-                               QMainWindow,
-                               QFileDialog,
-                               QAbstractItemView,
-                               QDialog,
-                               QLabel,
-                               QListWidget,
-                               QHBoxLayout)
+from PySide6.QtWidgets import QApplication, QVBoxLayout, QWidget, QScrollArea, QMainWindow, QFileDialog, QAbstractItemView, QDialog, QLabel, QDialogButtonBox, QListWidget, QHBoxLayout, QLineEdit
 from PySide6.QtCore import *
 from PySide6.QtGui import QIcon
 from windows.ui_mainwindow import Ui_MainWindow
@@ -25,7 +15,6 @@ codes = {}
 ignore = []
 description_codes = {}
 
-
 class CustomDialog(QDialog):
     def __init__(self):
         super().__init__()
@@ -36,6 +25,7 @@ class CustomDialog(QDialog):
 
         self.layout = QHBoxLayout()
         self.lista = QListWidget()
+
         self.lista.addItems(codes)
 
         self.scroll = QScrollArea()
@@ -53,14 +43,12 @@ class CustomDialog(QDialog):
         self.setLayout(self.layout)
 
         self.lista.itemClicked.connect(self.selectionCode)
+    
 
     def selectionCode(self):
-        self.message.setText(
-            "Error message: {}\nThis error was found in line: {}".format(
-                description_codes[self.lista.currentItem().text()],
-                codes[self.lista.currentItem().text()]))
+        self.message.setText("Error message: {}\nThis error was found in line: {}".format(description_codes[self.lista.currentItem().text()], 
+                                                                            codes[self.lista.currentItem().text()]))
         self.message.adjustSize()
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -80,7 +68,7 @@ class MainWindow(QMainWindow):
         self.ui.listWidget.itemClicked.connect(self.selectionChanged)
         self.ui.progressBar.setValue(100)
         self.ui.progressBar.setVisible(False)
-
+    
     def showDetailsWindow(self):
         CustomDialog().exec()
 
@@ -92,10 +80,10 @@ class MainWindow(QMainWindow):
 
     def browseFile(self):
         global path
-        path, _ = QFileDialog.getOpenFileName(self,
-                                              'Single File',
-                                              QDir.rootPath(),
-                                              '*.py')
+        path, _ = QFileDialog.getOpenFileName(self, 
+                                                  'Single File', 
+                                                  QDir.rootPath(), 
+                                                  '*.py')
         global file_name
         file_name = os.path.basename(path)
         self.ui.lineEdit.setText(file_name)
@@ -106,7 +94,7 @@ class MainWindow(QMainWindow):
             self.ui.checkButton.setEnabled(True)
         else:
             self.ui.checkButton.setEnabled(False)
-
+    
     def checkFile(self):
         global description_codes
         global codes
@@ -126,8 +114,7 @@ class MainWindow(QMainWindow):
             else:
                 ignore.append(key)
                 codes[key] = [re.findall("(?<=:)(.*?)(?=:)", code)[1]]
-                description_codes[key] = re.findall(
-                    "(?<={})(.*)".format(key), code)[0]
+                description_codes[key] = re.findall("(?<={})(.*)".format(key), code)[0]
         self.ui.listWidget.clear()
         self.ui.listWidget.addItems(codes.keys())
         if len(codes) > 0:
@@ -136,11 +123,11 @@ class MainWindow(QMainWindow):
             self.ui.fixButton.setEnabled(True)
         else:
             self.success()
-
+    
     def markAll(self):
         self.ui.listWidget.selectAll()
         self.ui.fixButton.setEnabled(True)
-
+    
     def fix(self):
         global ignore
         for item in self.ui.listWidget.selectedItems():
@@ -167,9 +154,7 @@ class MainWindow(QMainWindow):
         dlg.widget.setLayout(dlg.vbox)
         dlg.scroll.setWidgetResizable(True)
         if len(ignore) > 0:
-            dlg.message = QLabel(
-                "The fix process is complete, you have skipped these codes: {}"
-                .format(ignore))
+            dlg.message = QLabel("The fix process is complete, you have skipped these codes: {}".format(ignore))
         else:
             dlg.message = QLabel("All codes have been fixed.")
         dlg.message.setWordWrap(True)
@@ -188,7 +173,6 @@ class MainWindow(QMainWindow):
         self.ui.fixButton.setEnabled(False)
         self.ui.checkButton.setEnabled(False)
         self.ui.listWidget.clear()
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
